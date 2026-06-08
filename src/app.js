@@ -27,10 +27,12 @@ const auth = getAuth(app);
 const db = getFirestore(app);
 
 // DOM Elements
+const landingSection = document.getElementById('landing-section');
 const authSection = document.getElementById('auth-section');
 const dashboardSection = document.getElementById('dashboard-section');
 const authForm = document.getElementById('auth-form');
 const authTitle = document.getElementById('auth-title');
+const authSubtitle = document.getElementById('auth-subtitle');
 const authSubmitBtn = document.getElementById('auth-submit-btn');
 const toggleAuth = document.getElementById('toggle-auth');
 const toggleText = document.getElementById('toggle-text');
@@ -42,6 +44,8 @@ const ideaModal = document.getElementById('idea-modal');
 const ideaForm = document.getElementById('idea-form');
 const closeModalBtns = document.querySelectorAll('.close-modal');
 const modalTitle = document.getElementById('modal-title');
+const backToLandingBtn = document.querySelector('.back-to-landing');
+const showAuthBtns = document.querySelectorAll('.show-auth-btn');
 
 let isLogin = true;
 let currentUser = null;
@@ -51,24 +55,53 @@ let unsubscribeIdeas = null;
 onAuthStateChanged(auth, (user) => {
     if (user) {
         currentUser = user;
-        showDashboard();
+        showSection('dashboard');
         userEmailSpan.textContent = user.email;
         fetchIdeas();
     } else {
         currentUser = null;
-        showAuth();
+        showSection('landing');
         if (unsubscribeIdeas) unsubscribeIdeas();
     }
 });
 
-// Toggle Auth Mode
-toggleAuth.addEventListener('click', (e) => {
-    e.preventDefault();
-    isLogin = !isLogin;
-    authTitle.textContent = isLogin ? 'Login' : 'Sign Up';
+// Navigation Logic
+function showSection(sectionId) {
+    [landingSection, authSection, dashboardSection].forEach(section => {
+        section.classList.add('hidden');
+    });
+    
+    if (sectionId === 'landing') landingSection.classList.remove('hidden');
+    else if (sectionId === 'auth') authSection.classList.remove('hidden');
+    else if (sectionId === 'dashboard') dashboardSection.classList.remove('hidden');
+}
+
+showAuthBtns.forEach(btn => {
+    btn.addEventListener('click', () => {
+        const mode = btn.getAttribute('data-mode');
+        if (mode === 'signup') {
+            setAuthMode(false);
+        } else {
+            setAuthMode(true);
+        }
+        showSection('auth');
+    });
+});
+
+backToLandingBtn.addEventListener('click', () => showSection('landing'));
+
+function setAuthMode(login) {
+    isLogin = login;
+    authTitle.textContent = isLogin ? 'Welcome Back' : 'Create Account';
+    authSubtitle.textContent = isLogin ? 'Enter your details to access your ideas' : 'Start collecting your ideas today';
     authSubmitBtn.textContent = isLogin ? 'Login' : 'Sign Up';
     toggleText.textContent = isLogin ? "Don't have an account?" : "Already have an account?";
     toggleAuth.textContent = isLogin ? 'Sign Up' : 'Login';
+}
+
+toggleAuth.addEventListener('click', (e) => {
+    e.preventDefault();
+    setAuthMode(!isLogin);
 });
 
 // Auth Form Submission
@@ -76,6 +109,9 @@ authForm.addEventListener('submit', async (e) => {
     e.preventDefault();
     const email = authForm.email.value;
     const password = authForm.password.value;
+    
+    authSubmitBtn.disabled = true;
+    authSubmitBtn.textContent = isLogin ? 'Logging in...' : 'Creating account...';
 
     try {
         if (isLogin) {
@@ -86,25 +122,19 @@ authForm.addEventListener('submit', async (e) => {
         authForm.reset();
     } catch (error) {
         alert(error.message);
+    } finally {
+        authSubmitBtn.disabled = false;
+        authSubmitBtn.textContent = isLogin ? 'Login' : 'Sign Up';
     }
 });
 
 // Logout
 logoutBtn.addEventListener('click', () => signOut(auth));
 
-// UI Navigation
-function showDashboard() {
-    authSection.classList.add('hidden');
-    dashboardSection.classList.remove('hidden');
-}
-
-function showAuth() {
-    dashboardSection.classList.add('hidden');
-    authSection.classList.remove('hidden');
-}
-
 // Fetch Ideas
 function fetchIdeas() {
+    // Optimization: We use a simple query first to avoid immediate index requirement errors if possible,
+    // though for ordering by createdAt with a filter, an index IS required in Firestore.
     const q = query(
         collection(db, "ideas"), 
         where("userId", "==", currentUser.uid),
@@ -114,7 +144,12 @@ function fetchIdeas() {
     unsubscribeIdeas = onSnapshot(q, (snapshot) => {
         ideasList.innerHTML = '';
         if (snapshot.empty) {
-            ideasList.innerHTML = '<div class="empty-state">No ideas found. Start by adding one!</div>';
+            ideasList.innerHTML = `
+                <div class="empty-state">
+                    <div style="font-size: 3rem; margin-bottom: 1rem;">✨</div>
+                    <h3>Your collection is empty</h3>
+                    <p>Every great project starts with a single spark. Add your first one!</p>
+                </div>`;
             return;
         }
 
@@ -124,11 +159,15 @@ function fetchIdeas() {
             ideasList.appendChild(card);
         });
     }, (error) => {
-        console.error("Error fetching ideas:", error);
+        console.error("Firestore Error:", error);
         if (error.code === 'failed-precondition') {
-            ideasList.innerHTML = '<div class="error-state">Please enable Firestore Indexes in your Firebase Console.</div>';
+            ideasList.innerHTML = `
+                <div class="error-state">
+                    <h3>Index Required</h3>
+                    <p>Firestore needs an index for this query. Please check your Firebase Console for the auto-generated link to create it.</p>
+                </div>`;
         } else {
-            ideasList.innerHTML = '<div class="error-state">Error loading ideas. Check console for details.</div>';
+            ideasList.innerHTML = '<div class="error-state">Error loading collection. Check console for details.</div>';
         }
     });
 }
@@ -137,28 +176,28 @@ function createIdeaCard(id, idea) {
     const div = document.createElement('div');
     div.className = 'idea-card';
     
-    const date = idea.createdAt ? new Date(idea.createdAt.seconds * 1000).toLocaleDateString() : 'Just now';
+    const date = idea.createdAt ? new Date(idea.createdAt.seconds * 1000).toLocaleDateString(undefined, {
+        month: 'short', day: 'numeric', year: 'numeric'
+    }) : 'Just now';
     
     div.innerHTML = `
         <span class="idea-tag tag-${idea.type}">${idea.type}</span>
         <h3>${escapeHtml(idea.title)}</h3>
-        <p class="idea-content">${escapeHtml(idea.content || '')}</p>
-        ${idea.url ? `<a href="${idea.url}" target="_blank" class="idea-url">${escapeHtml(idea.url)}</a>` : ''}
+        <p class="idea-content">${escapeHtml(idea.content || 'No description provided.')}</p>
+        ${idea.url ? `<a href="${idea.url}" target="_blank" class="idea-url">🔗 ${escapeHtml(idea.url)}</a>` : ''}
         <div class="idea-footer">
             <span class="idea-date">${date}</span>
             <div class="idea-actions">
-                <button class="btn btn-outline edit-btn" data-id="${id}">Edit</button>
-                <button class="btn btn-outline btn-danger delete-btn" data-id="${id}">Delete</button>
+                <button class="btn btn-outline btn-sm edit-btn" data-id="${id}">Edit</button>
+                <button class="btn btn-outline btn-sm btn-danger delete-btn" data-id="${id}">Delete</button>
             </div>
         </div>
     `;
 
-    // Edit Button
     div.querySelector('.edit-btn').addEventListener('click', () => openEditModal(id, idea));
     
-    // Delete Button
     div.querySelector('.delete-btn').addEventListener('click', async () => {
-        if (confirm('Are you sure you want to delete this idea?')) {
+        if (confirm('Delete this spark? This action cannot be undone.')) {
             try {
                 await deleteDoc(doc(db, "ideas", id));
             } catch (error) {
@@ -172,9 +211,11 @@ function createIdeaCard(id, idea) {
 
 // Modal Logic
 addIdeaBtn.addEventListener('click', () => {
-    modalTitle.textContent = 'Add New Idea';
+    modalTitle.textContent = 'New Spark';
     ideaForm.reset();
     document.getElementById('idea-id').value = '';
+    // Default to 'idea' radio
+    document.querySelector('input[name="idea-type"][value="idea"]').checked = true;
     ideaModal.classList.remove('hidden');
 });
 
@@ -187,10 +228,10 @@ window.onclick = (event) => {
 };
 
 function openEditModal(id, idea) {
-    modalTitle.textContent = 'Edit Idea';
+    modalTitle.textContent = 'Edit Spark';
     document.getElementById('idea-id').value = id;
     document.getElementById('idea-title').value = idea.title;
-    document.getElementById('idea-type').value = idea.type;
+    document.querySelector(`input[name="idea-type"][value="${idea.type}"]`).checked = true;
     document.getElementById('idea-content').value = idea.content || '';
     document.getElementById('idea-url').value = idea.url || '';
     ideaModal.classList.remove('hidden');
@@ -200,9 +241,11 @@ function openEditModal(id, idea) {
 ideaForm.addEventListener('submit', async (e) => {
     e.preventDefault();
     const id = document.getElementById('idea-id').value;
+    const type = document.querySelector('input[name="idea-type"]:checked').value;
+    
     const ideaData = {
         title: document.getElementById('idea-title').value,
-        type: document.getElementById('idea-type').value,
+        type: type,
         content: document.getElementById('idea-content').value,
         url: document.getElementById('idea-url').value,
         userId: currentUser.uid,
@@ -223,7 +266,6 @@ ideaForm.addEventListener('submit', async (e) => {
     }
 });
 
-// Helper: Escape HTML to prevent XSS
 function escapeHtml(text) {
     const div = document.createElement('div');
     div.textContent = text;

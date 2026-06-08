@@ -3,29 +3,92 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Content Idea Collector</title>
+    <title>ContentSpark | Ignite Your Ideas</title>
     <link rel="stylesheet" href="styles.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 </head>
 <body>
     <div id="app">
+        <!-- Landing Page Section -->
+        <section id="landing-section">
+            <nav class="nav">
+                <div class="container nav-content">
+                    <div class="logo">Content<span>Spark</span></div>
+                    <div class="nav-links">
+                        <button class="btn btn-outline show-auth-btn">Login</button>
+                        <button class="btn btn-primary show-auth-btn" data-mode="signup">Get Started</button>
+                    </div>
+                </div>
+            </nav>
+            
+            <header class="hero">
+                <div class="container hero-content">
+                    <h1>Capture every <span>spark</span> of inspiration.</h1>
+                    <p>The all-in-one collector for your content ideas, drafts, and inspiration links. Organized, accessible, and built for creators.</p>
+                    <div class="hero-btns">
+                        <button class="btn btn-primary btn-lg show-auth-btn" data-mode="signup">Start Collecting for Free</button>
+                    </div>
+                    <div class="hero-mockup">
+                        <div class="mockup-screen">
+                            <div class="mockup-header"></div>
+                            <div class="mockup-body">
+                                <div class="mockup-card"></div>
+                                <div class="mockup-card"></div>
+                                <div class="mockup-card"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </header>
+
+            <section class="features">
+                <div class="container">
+                    <div class="features-grid">
+                        <div class="feature-item">
+                            <div class="feature-icon">💡</div>
+                            <h3>Quick Capture</h3>
+                            <p>Instantly save ideas before they fade away. Perfect for on-the-go inspiration.</p>
+                        </div>
+                        <div class="feature-item">
+                            <div class="feature-icon">📝</div>
+                            <h3>Draft Management</h3>
+                            <p>Start your drafts right where your ideas are. Keep your workflow seamless.</p>
+                        </div>
+                        <div class="feature-item">
+                            <div class="feature-icon">🔗</div>
+                            <h3>Link Storage</h3>
+                            <p>Save references and inspiration links from across the web in one place.</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <footer class="footer">
+                <div class="container">
+                    <p>&copy; 2026 ContentSpark. All rights reserved.</p>
+                </div>
+            </footer>
+        </section>
+
         <!-- Auth Section -->
         <section id="auth-section" class="hidden">
-            <div class="container">
+            <div class="container auth-container">
                 <div class="auth-card">
-                    <h1 id="auth-title">Login</h1>
+                    <button class="back-to-landing">&larr; Back</button>
+                    <h1 id="auth-title">Welcome Back</h1>
+                    <p id="auth-subtitle">Enter your details to access your ideas</p>
                     <form id="auth-form">
                         <div class="form-group">
                             <label for="email">Email</label>
-                            <input type="email" id="email" required placeholder="your@email.com">
+                            <input type="email" id="email" required placeholder="name@example.com">
                         </div>
                         <div class="form-group">
                             <label for="password">Password</label>
                             <input type="password" id="password" required placeholder="••••••••">
                         </div>
-                        <button type="submit" id="auth-submit-btn" class="btn btn-primary">Login</button>
+                        <button type="submit" id="auth-submit-btn" class="btn btn-primary btn-full">Login</button>
                     </form>
                     <p class="auth-toggle">
                         <span id="toggle-text">Don't have an account?</span>
@@ -37,25 +100,28 @@
 
         <!-- Dashboard Section -->
         <section id="dashboard-section" class="hidden">
-            <header class="header">
+            <header class="dashboard-header">
                 <div class="container header-content">
-                    <h1>Idea Collector</h1>
+                    <div class="logo">Content<span>Spark</span></div>
                     <div class="user-controls">
                         <span id="user-email"></span>
-                        <button id="logout-btn" class="btn btn-outline">Logout</button>
+                        <button id="logout-btn" class="btn btn-outline btn-sm">Logout</button>
                     </div>
                 </div>
             </header>
 
-            <main class="container">
-                <div class="actions-bar">
-                    <h2>My Ideas</h2>
-                    <button id="add-idea-btn" class="btn btn-primary">+ New Idea</button>
+            <main class="container dashboard-main">
+                <div class="dashboard-actions">
+                    <div>
+                        <h2>My Collection</h2>
+                        <p class="text-muted">Manage your sparks of inspiration</p>
+                    </div>
+                    <button id="add-idea-btn" class="btn btn-primary">+ New Spark</button>
                 </div>
 
                 <div id="ideas-list" class="ideas-grid">
                     <!-- Ideas will be injected here -->
-                    <div class="loading">Loading your ideas...</div>
+                    <div class="loading">Loading your collection...</div>
                 </div>
             </main>
         </section>
@@ -64,41 +130,49 @@
         <div id="idea-modal" class="modal hidden">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h2 id="modal-title">Add New Idea</h2>
+                    <h2 id="modal-title">New Spark</h2>
                     <span class="close-modal">&times;</span>
                 </div>
                 <form id="idea-form">
                     <input type="hidden" id="idea-id">
                     <div class="form-group">
                         <label for="idea-title">Title</label>
-                        <input type="text" id="idea-title" required placeholder="e.g., 5 Tips for Productivity">
+                        <input type="text" id="idea-title" required placeholder="What's the idea?">
                     </div>
                     <div class="form-group">
                         <label for="idea-type">Type</label>
-                        <select id="idea-type" required>
-                            <option value="idea">Idea</option>
-                            <option value="draft">Draft</option>
-                            <option value="link">Link</option>
-                        </select>
+                        <div class="type-selector">
+                            <label class="type-option">
+                                <input type="radio" name="idea-type" value="idea" checked>
+                                <span>Idea</span>
+                            </label>
+                            <label class="type-option">
+                                <input type="radio" name="idea-type" value="draft">
+                                <span>Draft</span>
+                            </label>
+                            <label class="type-option">
+                                <input type="radio" name="idea-type" value="link">
+                                <span>Link</span>
+                            </label>
+                        </div>
                     </div>
                     <div class="form-group">
                         <label for="idea-content">Content / Description</label>
-                        <textarea id="idea-content" rows="4" placeholder="Describe your idea or paste your draft..."></textarea>
+                        <textarea id="idea-content" rows="5" placeholder="Elaborate on your spark..."></textarea>
                     </div>
                     <div class="form-group">
                         <label for="idea-url">URL (Optional)</label>
-                        <input type="url" id="idea-url" placeholder="https://...">
+                        <input type="url" id="idea-url" placeholder="https://example.com/inspiration">
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-outline close-modal">Cancel</button>
-                        <button type="submit" class="btn btn-primary">Save Idea</button>
+                        <button type="submit" class="btn btn-primary">Save Spark</button>
                     </div>
                 </form>
             </div>
         </div>
     </div>
 
-    <!-- Firebase SDKs -->
     <script type="module" src="app.js"></script>
 </body>
 </html>
