@@ -132,44 +132,58 @@ authForm.addEventListener('submit', async (e) => {
 logoutBtn.addEventListener('click', () => signOut(auth));
 
 // Fetch Ideas
-function fetchIdeas() {
-    // Optimization: We use a simple query first to avoid immediate index requirement errors if possible,
-    // though for ordering by createdAt with a filter, an index IS required in Firestore.
-    const q = query(
+async function fetchIdeas() {
+    // Attempt the preferred query (filtered and sorted)
+    const preferredQuery = query(
         collection(db, "ideas"), 
         where("userId", "==", currentUser.uid),
         orderBy("createdAt", "desc")
     );
 
-    unsubscribeIdeas = onSnapshot(q, (snapshot) => {
-        ideasList.innerHTML = '';
-        if (snapshot.empty) {
-            ideasList.innerHTML = `
-                <div class="empty-state">
-                    <div style="font-size: 3rem; margin-bottom: 1rem;">✨</div>
-                    <h3>Your collection is empty</h3>
-                    <p>Every great project starts with a single spark. Add your first one!</p>
-                </div>`;
-            return;
-        }
+    const setupListener = (q, isFallback = false) => {
+        if (unsubscribeIdeas) unsubscribeIdeas();
+        
+        unsubscribeIdeas = onSnapshot(q, (snapshot) => {
+            ideasList.innerHTML = '';
+            if (snapshot.empty) {
+                ideasList.innerHTML = `
+                    <div class="empty-state">
+                        <div style="font-size: 3rem; margin-bottom: 1rem;">✨</div>
+                        <h3>Your collection is empty</h3>
+                        <p>Every great project starts with a single spark. Add your first one!</p>
+                    </div>`;
+                return;
+            }
 
-        snapshot.forEach((doc) => {
-            const idea = doc.data();
-            const card = createIdeaCard(doc.id, idea);
-            ideasList.appendChild(card);
+            snapshot.forEach((doc) => {
+                const idea = doc.data();
+                const card = createIdeaCard(doc.id, idea);
+                ideasList.appendChild(card);
+            });
+            
+            if (isFallback) {
+                const notice = document.createElement('div');
+                notice.style.cssText = "grid-column: 1/-1; padding: 1rem; background: #fffbeb; color: #92400e; border-radius: 8px; margin-bottom: 1rem; font-size: 0.85rem; border: 1px solid #fef3c7;";
+                notice.innerHTML = "<b>Note:</b> Sorting is currently disabled because a Firestore Index is missing. Your ideas are shown by ID instead.";
+                ideasList.prepend(notice);
+            }
+        }, (error) => {
+            console.error("Firestore Error:", error);
+            if (error.code === 'failed-precondition' && !isFallback) {
+                console.log("Preferred query failed (index missing), trying fallback...");
+                // Fallback: Filter by userId but REMOVE the orderBy to bypass index requirement
+                const fallbackQuery = query(
+                    collection(db, "ideas"), 
+                    where("userId", "==", currentUser.uid)
+                );
+                setupListener(fallbackQuery, true);
+            } else {
+                ideasList.innerHTML = `<div class="error-state"><h3>Error loading collection</h3><p>${error.message}</p></div>`;
+            }
         });
-    }, (error) => {
-        console.error("Firestore Error:", error);
-        if (error.code === 'failed-precondition') {
-            ideasList.innerHTML = `
-                <div class="error-state">
-                    <h3>Index Required</h3>
-                    <p>Firestore needs an index for this query. Please check your Firebase Console for the auto-generated link to create it.</p>
-                </div>`;
-        } else {
-            ideasList.innerHTML = '<div class="error-state">Error loading collection. Check console for details.</div>';
-        }
-    });
+    };
+
+    setupListener(preferredQuery);
 }
 
 function createIdeaCard(id, idea) {
