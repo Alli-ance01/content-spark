@@ -99,9 +99,46 @@ const resetSubmitBtn = document.getElementById('reset-submit-btn');
 const verificationBanner = document.getElementById('verification-banner');
 const resendVerificationBtn = document.getElementById('resend-verification-btn');
 
+const confirmModal = document.getElementById('confirm-modal');
+const confirmDeleteBtn = document.getElementById('confirm-delete-btn');
+const confirmCancelBtn = document.getElementById('confirm-cancel-btn');
+
 let isLogin = true;
 let currentUser = null;
 let unsubscribeIdeas = null;
+
+// =====================
+// Custom Confirm Dialog
+// =====================
+function showConfirm() {
+    return new Promise((resolve) => {
+        confirmModal.classList.remove('hidden');
+
+        const onConfirm = () => {
+            confirmModal.classList.add('hidden');
+            cleanup();
+            resolve(true);
+        };
+        const onCancel = () => {
+            confirmModal.classList.add('hidden');
+            cleanup();
+            resolve(false);
+        };
+        const onBackdrop = (e) => {
+            if (e.target === confirmModal) onCancel();
+        };
+
+        function cleanup() {
+            confirmDeleteBtn.removeEventListener('click', onConfirm);
+            confirmCancelBtn.removeEventListener('click', onCancel);
+            confirmModal.removeEventListener('click', onBackdrop);
+        }
+
+        confirmDeleteBtn.addEventListener('click', onConfirm);
+        confirmCancelBtn.addEventListener('click', onCancel);
+        confirmModal.addEventListener('click', onBackdrop);
+    });
+}
 
 // =====================
 // Close Modal Logic (handles both modals)
@@ -364,7 +401,8 @@ function createIdeaCard(id, idea) {
     div.querySelector('.edit-btn').addEventListener('click', () => openEditModal(id, idea));
 
     div.querySelector('.delete-btn').addEventListener('click', async () => {
-        if (confirm('Delete this spark? This action cannot be undone.')) {
+        const confirmed = await showConfirm();
+        if (confirmed) {
             try {
                 await deleteDoc(doc(db, "ideas", id));
                 showToast('Spark deleted.', 'info');

@@ -227,6 +227,18 @@
                 </form>
             </div>
         </div>
+        <!-- Confirm Delete Modal -->
+        <div id="confirm-modal" class="modal hidden">
+            <div class="modal-content confirm-modal-content">
+                <div class="confirm-icon">🗑️</div>
+                <h2 class="confirm-title">Delete this Spark?</h2>
+                <p class="confirm-subtitle">This action cannot be undone. Your idea will be permanently removed.</p>
+                <div class="confirm-actions">
+                    <button id="confirm-cancel-btn" class="btn btn-outline">Keep it</button>
+                    <button id="confirm-delete-btn" class="btn btn-delete-confirm">Yes, Delete</button>
+                </div>
+            </div>
+        </div>
     </div>
 
     <script type="module" src="app.js"></script>
