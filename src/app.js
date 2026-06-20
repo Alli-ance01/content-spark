@@ -4,7 +4,8 @@ import {
     onAuthStateChanged, 
     signInWithEmailAndPassword, 
     createUserWithEmailAndPassword, 
-    signOut 
+    signOut,
+    updateProfile 
 } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
 import { 
     getFirestore, 
@@ -31,6 +32,8 @@ const landingSection = document.getElementById('landing-section');
 const authSection = document.getElementById('auth-section');
 const dashboardSection = document.getElementById('dashboard-section');
 const authForm = document.getElementById('auth-form');
+const nameGroup = document.getElementById('name-group');
+const authName = document.getElementById('name');
 const authTitle = document.getElementById('auth-title');
 const authSubtitle = document.getElementById('auth-subtitle');
 const authSubmitBtn = document.getElementById('auth-submit-btn');
@@ -97,6 +100,13 @@ function setAuthMode(login) {
     authSubmitBtn.textContent = isLogin ? 'Login' : 'Sign Up';
     toggleText.textContent = isLogin ? "Don't have an account?" : "Already have an account?";
     toggleAuth.textContent = isLogin ? 'Sign Up' : 'Login';
+    if (isLogin) {
+        nameGroup.classList.add('hidden');
+        authName.required = false;
+    } else {
+        nameGroup.classList.remove('hidden');
+        authName.required = true;
+    }
 }
 
 toggleAuth.addEventListener('click', (e) => {
@@ -109,6 +119,7 @@ authForm.addEventListener('submit', async (e) => {
     e.preventDefault();
     const email = authForm.email.value;
     const password = authForm.password.value;
+    const name = authName.value;
     
     authSubmitBtn.disabled = true;
     authSubmitBtn.textContent = isLogin ? 'Logging in...' : 'Creating account...';
@@ -117,7 +128,8 @@ authForm.addEventListener('submit', async (e) => {
         if (isLogin) {
             await signInWithEmailAndPassword(auth, email, password);
         } else {
-            await createUserWithEmailAndPassword(auth, email, password);
+            const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+            await updateProfile(userCredential.user, { displayName: name });
         }
         authForm.reset();
     } catch (error) {
@@ -264,6 +276,7 @@ ideaForm.addEventListener('submit', async (e) => {
         url: document.getElementById('idea-url').value,
         userId: currentUser.uid,
         userEmail: currentUser.email,
+        userName: currentUser.displayName || 'Creator',
         updatedAt: serverTimestamp()
     };
 
