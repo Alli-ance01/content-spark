@@ -263,6 +263,7 @@ ideaForm.addEventListener('submit', async (e) => {
         content: document.getElementById('idea-content').value,
         url: document.getElementById('idea-url').value,
         userId: currentUser.uid,
+        userEmail: currentUser.email,
         updatedAt: serverTimestamp()
     };
 
