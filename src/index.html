@@ -18,6 +18,7 @@
                 <div class="container nav-content">
                     <div class="logo">Content<span>Spark</span></div>
                     <div class="nav-links">
+                        <button id="dark-toggle" class="btn btn-outline dark-toggle-btn" aria-label="Toggle dark mode">🌙</button>
                         <button class="btn btn-outline show-auth-btn">Login</button>
                         <button class="btn btn-primary show-auth-btn" data-mode="signup">Get Started</button>
                     </div>
@@ -33,11 +34,26 @@
                     </div>
                     <div class="hero-mockup">
                         <div class="mockup-screen">
-                            <div class="mockup-header"></div>
+                            <div class="mockup-topbar">
+                                <div class="mockup-logo">Content<span>Spark</span></div>
+                                <div class="mockup-pill">+ New Spark</div>
+                            </div>
                             <div class="mockup-body">
-                                <div class="mockup-card"></div>
-                                <div class="mockup-card"></div>
-                                <div class="mockup-card"></div>
+                                <div class="mockup-card">
+                                    <div class="mockup-tag mockup-tag-idea">Idea</div>
+                                    <div class="mockup-card-title">YouTube Series on Productivity</div>
+                                    <div class="mockup-card-text">5-part series covering deep work, time blocking, and focus techniques...</div>
+                                </div>
+                                <div class="mockup-card">
+                                    <div class="mockup-tag mockup-tag-draft">Draft</div>
+                                    <div class="mockup-card-title">Why Creators Burn Out</div>
+                                    <div class="mockup-card-text">The hidden reason most creators quit in year two is not what you think...</div>
+                                </div>
+                                <div class="mockup-card mockup-card-hidden">
+                                    <div class="mockup-tag mockup-tag-link">Link</div>
+                                    <div class="mockup-card-title">Viral Hook Framework</div>
+                                    <div class="mockup-card-text">🔗 notion.so/hook-framework</div>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -117,7 +133,8 @@
                 <div class="container header-content">
                     <div class="logo">Content<span>Spark</span></div>
                     <div class="user-controls">
-                        <span id="user-email"></span>
+                        <span id="user-email" class="user-email-label"></span>
+                        <button id="dark-toggle-dash" class="btn btn-outline btn-sm dark-toggle-btn" aria-label="Toggle dark mode">🌙</button>
                         <button id="logout-btn" class="btn btn-outline btn-sm">Logout</button>
                     </div>
                 </div>

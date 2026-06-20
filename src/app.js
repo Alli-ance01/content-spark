@@ -449,5 +449,39 @@ function escapeHtml(text) {
     return div.innerHTML;
 }
 
-// Set initial state
+// =====================
+// Dark Mode Toggle
+// =====================
+const darkToggles = document.querySelectorAll('.dark-toggle-btn');
+
+function applyTheme(isDark) {
+    document.documentElement.setAttribute('data-theme', isDark ? 'dark' : 'light');
+    darkToggles.forEach(btn => {
+        btn.textContent = isDark ? '☀️' : '🌙';
+        btn.setAttribute('aria-label', isDark ? 'Switch to light mode' : 'Switch to dark mode');
+    });
+    localStorage.setItem('theme', isDark ? 'dark' : 'light');
+}
+
+// Load saved theme or system preference
+const savedTheme = localStorage.getItem('theme');
+const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+const initialDark = savedTheme ? savedTheme === 'dark' : prefersDark;
+applyTheme(initialDark);
+
+darkToggles.forEach(btn => {
+    btn.addEventListener('click', () => {
+        const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
+        applyTheme(!isDark);
+    });
+});
+
+// Listen for OS-level theme changes (if user hasn't manually set one)
+window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', e => {
+    if (!localStorage.getItem('theme')) {
+        applyTheme(e.matches);
+    }
+});
+
+// Set initial auth state
 setAuthMode(true);
