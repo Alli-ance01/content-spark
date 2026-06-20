@@ -285,3 +285,154 @@ h3 { font-size: 1.25rem; font-weight: 600; }
     .mockup-card:nth-child(n+2) { display: none; }
     .type-selector { grid-template-columns: 1fr; }
 }
+
+/* ===================== */
+/* Toast Notifications   */
+/* ===================== */
+#toast-container {
+    position: fixed;
+    top: 1.5rem;
+    right: 1.5rem;
+    z-index: 9999;
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+    pointer-events: none;
+}
+
+.toast {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 1rem 1.25rem;
+    border-radius: var(--radius);
+    font-weight: 600;
+    font-size: 0.9rem;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.15);
+    pointer-events: all;
+    animation: toastSlideIn 0.35s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    max-width: 360px;
+    backdrop-filter: blur(10px);
+}
+
+.toast.hiding {
+    animation: toastSlideOut 0.3s ease-in forwards;
+}
+
+.toast-success { background: #ecfdf5; color: #065f46; border: 1px solid #a7f3d0; }
+.toast-error { background: #fef2f2; color: #991b1b; border: 1px solid #fecaca; }
+.toast-info { background: #eff6ff; color: #1e40af; border: 1px solid #bfdbfe; }
+
+.toast-icon { font-size: 1.1rem; flex-shrink: 0; }
+
+@keyframes toastSlideIn {
+    from { opacity: 0; transform: translateX(110%); }
+    to   { opacity: 1; transform: translateX(0); }
+}
+
+@keyframes toastSlideOut {
+    from { opacity: 1; transform: translateX(0); }
+    to   { opacity: 0; transform: translateX(110%); }
+}
+
+/* ===================== */
+/* Google Button         */
+/* ===================== */
+.google-btn {
+    gap: 0.75rem;
+    background: white;
+    border: 1.5px solid var(--border);
+    color: var(--text);
+    font-weight: 600;
+    margin-top: 0.5rem;
+}
+.google-btn:hover {
+    background: var(--bg-alt);
+    border-color: #aaa;
+    transform: translateY(-1px);
+}
+
+/* ===================== */
+/* Auth Divider          */
+/* ===================== */
+.auth-divider {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin: 1.25rem 0;
+    color: var(--text-muted);
+    font-size: 0.85rem;
+}
+.auth-divider::before,
+.auth-divider::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: var(--border);
+}
+
+/* ===================== */
+/* Forgot Password       */
+/* ===================== */
+.forgot-link {
+    display: block;
+    text-align: right;
+    font-size: 0.8rem;
+    color: var(--primary);
+    text-decoration: none;
+    font-weight: 600;
+    margin-top: 0.5rem;
+}
+.forgot-link:hover { text-decoration: underline; }
+
+/* ===================== */
+/* Verification Banner   */
+/* ===================== */
+.verification-banner {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    background: #fffbeb;
+    border: 1px solid #fde68a;
+    color: #92400e;
+    padding: 0.875rem 1.25rem;
+    border-radius: var(--radius);
+    margin-bottom: 2rem;
+    font-size: 0.9rem;
+    font-weight: 500;
+    flex-wrap: wrap;
+}
+
+/* ===================== */
+/* Button Loading State  */
+/* ===================== */
+.btn.loading {
+    position: relative;
+    color: transparent !important;
+    pointer-events: none;
+}
+.btn.loading::after {
+    content: '';
+    position: absolute;
+    width: 18px;
+    height: 18px;
+    top: 50%;
+    left: 50%;
+    margin: -9px 0 0 -9px;
+    border: 2px solid rgba(255, 255, 255, 0.4);
+    border-top-color: white;
+    border-radius: 50%;
+    animation: spin 0.7s linear infinite;
+}
+.btn-outline.loading::after {
+    border-color: rgba(0,0,0,0.2);
+    border-top-color: var(--primary);
+}
+
+@keyframes spin {
+    to { transform: rotate(360deg); }
+}
+
+/* Modal footer spacing */
+.modal-footer { display: flex; justify-content: flex-end; gap: 1rem; margin-top: 2rem; }
