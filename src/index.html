@@ -4,15 +4,20 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ContentSpark | Ignite Your Ideas</title>
+    <meta name="description" content="The all-in-one collector for your content ideas, drafts, and inspiration links. Organized, accessible, and built for creators.">
     <link rel="stylesheet" href="styles.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#6366f1">
+    <link rel="apple-touch-icon" href="icon-512.png">
 </head>
 <body>
     <div id="toast-container"></div>
     <div id="app">
-        <!-- Landing Page Section -->
+
+        <!-- ===== Landing Page ===== -->
         <section id="landing-section">
             <nav class="nav">
                 <div class="container nav-content">
@@ -24,7 +29,7 @@
                     </div>
                 </div>
             </nav>
-            
+
             <header class="hero">
                 <div class="container hero-content">
                     <h1>Capture every <span>spark</span> of inspiration.</h1>
@@ -82,6 +87,29 @@
                 </div>
             </section>
 
+            <section class="how-it-works">
+                <div class="container">
+                    <h2 class="section-title">How It Works</h2>
+                    <div class="steps-grid">
+                        <div class="step-card">
+                            <div class="step-num">1</div>
+                            <h3>Capture Inspiration</h3>
+                            <p>Found a great link or had a sudden idea? Save it instantly using our quick-capture form or mobile app.</p>
+                        </div>
+                        <div class="step-card">
+                            <div class="step-num">2</div>
+                            <h3>Organize & Refine</h3>
+                            <p>Tag, categorize, and draft. Turn raw sparks into actionable content outlines directly in your dashboard.</p>
+                        </div>
+                        <div class="step-card">
+                            <div class="step-num">3</div>
+                            <h3>Create & Export</h3>
+                            <p>When you're ready to create, all your references are in one place. Export to JSON or CSV anytime.</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
             <footer class="footer">
                 <div class="container">
                     <p>&copy; 2026 ContentSpark. All rights reserved.</p>
@@ -89,7 +117,7 @@
             </footer>
         </section>
 
-        <!-- Auth Section -->
+        <!-- ===== Auth Section ===== -->
         <section id="auth-section" class="hidden">
             <div class="container auth-container">
                 <div class="auth-card">
@@ -107,14 +135,20 @@
                         </div>
                         <div class="form-group">
                             <label for="password">Password</label>
-                            <input type="password" id="password" required placeholder="••••••••">
+                            <div class="password-wrapper">
+                                <input type="password" id="password" required placeholder="••••••••">
+                                <button type="button" class="password-toggle" id="password-toggle" aria-label="Show password">
+                                    <!-- Eye open icon -->
+                                    <svg id="eye-icon" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+                                </button>
+                            </div>
                             <a href="#" id="forgot-password-link" class="forgot-link">Forgot password?</a>
                         </div>
                         <button type="submit" id="auth-submit-btn" class="btn btn-primary btn-full">Login</button>
                     </form>
-                    
+
                     <div class="auth-divider"><span>or</span></div>
-                    
+
                     <button id="google-auth-btn" class="btn btn-outline btn-full google-btn">
                         <svg viewBox="0 0 24 24" width="20" height="20" xmlns="http://www.w3.org/2000/svg"><path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/><path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/><path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" fill="#FBBC05"/><path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/></svg>
                         Sign in with Google
@@ -127,15 +161,17 @@
             </div>
         </section>
 
-        <!-- Dashboard Section -->
+        <!-- ===== Dashboard Section ===== -->
         <section id="dashboard-section" class="hidden">
             <header class="dashboard-header">
                 <div class="container header-content">
                     <div class="logo">Content<span>Spark</span></div>
                     <div class="user-controls">
-                        <span id="user-email" class="user-email-label"></span>
                         <button id="dark-toggle-dash" class="btn btn-outline btn-sm dark-toggle-btn" aria-label="Toggle dark mode">🌙</button>
                         <button id="logout-btn" class="btn btn-outline btn-sm">Logout</button>
+                        <div class="user-avatar" id="user-avatar" title="">
+                            <span id="user-initials"></span>
+                        </div>
                     </div>
                 </div>
             </header>
@@ -146,58 +182,129 @@
                     <button id="resend-verification-btn" class="btn btn-sm btn-outline">Resend Email</button>
                 </div>
 
+                <!-- Stats Bar -->
+                <div class="stats-bar" id="stats-bar">
+                    <div class="stat-item">
+                        <span class="stat-num" id="stat-total">0</span>
+                        <span class="stat-label">Total</span>
+                    </div>
+                    <div class="stat-divider"></div>
+                    <div class="stat-item">
+                        <span class="stat-num stat-idea" id="stat-ideas">0</span>
+                        <span class="stat-label">💡 Ideas</span>
+                    </div>
+                    <div class="stat-divider"></div>
+                    <div class="stat-item">
+                        <span class="stat-num stat-draft" id="stat-drafts">0</span>
+                        <span class="stat-label">📝 Drafts</span>
+                    </div>
+                    <div class="stat-divider"></div>
+                    <div class="stat-item">
+                        <span class="stat-num stat-link" id="stat-links">0</span>
+                        <span class="stat-label">🔗 Links</span>
+                    </div>
+                    <div class="stat-divider"></div>
+                    <div class="stat-item">
+                        <span class="stat-num stat-pinned" id="stat-pinned">0</span>
+                        <span class="stat-label">📌 Pinned</span>
+                    </div>
+                </div>
+
+                <!-- Dashboard Header Row -->
                 <div class="dashboard-actions">
                     <div>
                         <h2>My Collection</h2>
                         <p class="text-muted">Manage your sparks of inspiration</p>
                     </div>
-                    <button id="add-idea-btn" class="btn btn-primary">+ New Spark</button>
+                    <div class="action-btns">
+                        <button id="export-btn" class="btn btn-outline btn-sm" title="Export your sparks">⬇ Export</button>
+                        <button id="add-idea-btn" class="btn btn-primary">+ New Spark</button>
+                    </div>
+                </div>
+
+                <!-- Search + Filter + Sort Toolbar -->
+                <div class="dashboard-toolbar">
+                    <div class="search-wrapper">
+                        <span class="search-icon">🔍</span>
+                        <input type="text" id="search-input" placeholder="Search sparks…" class="search-input" autocomplete="off" aria-label="Search sparks">
+                        <button class="search-clear hidden" id="search-clear" aria-label="Clear search">✕</button>
+                    </div>
+                    <div class="filter-tabs" id="filter-tabs" role="group" aria-label="Filter by type">
+                        <button class="filter-tab active" data-filter="all">All</button>
+                        <button class="filter-tab" data-filter="idea">💡 Ideas</button>
+                        <button class="filter-tab" data-filter="draft">📝 Drafts</button>
+                        <button class="filter-tab" data-filter="link">🔗 Links</button>
+                    </div>
+                    <select id="sort-select" class="sort-select" aria-label="Sort order">
+                        <option value="pinned-newest">📌 Pinned first</option>
+                        <option value="newest">🕐 Newest</option>
+                        <option value="oldest">🕑 Oldest</option>
+                        <option value="az">↑ A → Z</option>
+                        <option value="za">↓ Z → A</option>
+                    </select>
+                </div>
+
+                <!-- Bulk Actions Bar -->
+                <div id="bulk-actions-bar" class="bulk-actions-bar hidden">
+                    <span id="bulk-selected-count" class="bulk-count">0 selected</span>
+                    <div class="bulk-actions-group">
+                        <button id="bulk-delete-btn" class="btn btn-danger btn-sm">Delete Selected</button>
+                        <button id="bulk-cancel-btn" class="btn btn-outline btn-sm">Cancel</button>
+                    </div>
                 </div>
 
                 <div id="ideas-list" class="ideas-grid">
-                    <!-- Ideas will be injected here -->
-                    <div class="loading">Loading your collection...</div>
+                    <div class="loading">Loading your collection…</div>
                 </div>
             </main>
         </section>
 
-        <!-- Modal for Add/Edit Idea -->
-        <div id="idea-modal" class="modal hidden">
+        <!-- ===== Add / Edit Spark Modal ===== -->
+        <div id="idea-modal" class="modal hidden" role="dialog" aria-modal="true" aria-labelledby="modal-title">
             <div class="modal-content">
                 <div class="modal-header">
                     <h2 id="modal-title">New Spark</h2>
-                    <span class="close-modal">&times;</span>
+                    <span class="close-modal" role="button" tabindex="0" aria-label="Close modal">&times;</span>
                 </div>
                 <form id="idea-form">
                     <input type="hidden" id="idea-id">
                     <div class="form-group">
                         <label for="idea-title">Title</label>
-                        <input type="text" id="idea-title" required placeholder="What's the idea?">
+                        <input type="text" id="idea-title" required placeholder="What's the idea?" maxlength="100">
+                        <span class="char-counter" id="title-counter">0/100</span>
                     </div>
                     <div class="form-group">
-                        <label for="idea-type">Type</label>
+                        <label>Type</label>
                         <div class="type-selector">
                             <label class="type-option">
                                 <input type="radio" name="idea-type" value="idea" checked>
-                                <span>Idea</span>
+                                <span>💡 Idea</span>
                             </label>
                             <label class="type-option">
                                 <input type="radio" name="idea-type" value="draft">
-                                <span>Draft</span>
+                                <span>📝 Draft</span>
                             </label>
                             <label class="type-option">
                                 <input type="radio" name="idea-type" value="link">
-                                <span>Link</span>
+                                <span>🔗 Link</span>
                             </label>
                         </div>
                     </div>
                     <div class="form-group">
                         <label for="idea-content">Content / Description</label>
-                        <textarea id="idea-content" rows="5" placeholder="Elaborate on your spark..."></textarea>
+                        <textarea id="idea-content" rows="5" placeholder="Elaborate on your spark…" maxlength="2000"></textarea>
+                        <span class="char-counter" id="content-counter">0/2000</span>
                     </div>
                     <div class="form-group">
                         <label for="idea-url">URL (Optional)</label>
                         <input type="url" id="idea-url" placeholder="https://example.com/inspiration">
+                    </div>
+                    <div class="form-group">
+                        <label>Tags <span class="label-hint">(Enter or comma to add)</span></label>
+                        <div class="tags-input-wrapper" id="tags-input-wrapper">
+                            <div class="tags-pills" id="tags-pills"></div>
+                            <input type="text" id="tag-input" placeholder="Add a tag…" class="tag-input" autocomplete="off" maxlength="30">
+                        </div>
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-outline btn-sm close-modal">Cancel</button>
@@ -207,12 +314,33 @@
             </div>
         </div>
 
-        <!-- Password Reset Modal -->
-        <div id="reset-password-modal" class="modal hidden">
+        <!-- ===== Detail View Modal ===== -->
+        <div id="detail-modal" class="modal hidden" role="dialog" aria-modal="true">
+            <div class="modal-content detail-modal-content">
+                <div class="modal-header detail-modal-header">
+                    <span class="idea-tag" id="detail-type-tag"></span>
+                    <span class="close-modal" role="button" tabindex="0" aria-label="Close">&times;</span>
+                </div>
+                <h2 id="detail-title" class="detail-title"></h2>
+                <p id="detail-content-text" class="detail-body"></p>
+                <a id="detail-url" href="#" target="_blank" rel="noopener noreferrer" class="idea-url detail-url-link hidden"></a>
+                <div id="detail-tags-wrap" class="detail-tags-wrap hidden"></div>
+                <div class="detail-meta">
+                    <span id="detail-date" class="idea-date"></span>
+                </div>
+                <div class="modal-footer">
+                    <button class="btn btn-outline btn-sm" id="detail-copy-btn">📋 Copy</button>
+                    <button class="btn btn-primary btn-sm" id="detail-edit-btn">✏️ Edit Spark</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- ===== Password Reset Modal ===== -->
+        <div id="reset-password-modal" class="modal hidden" role="dialog" aria-modal="true">
             <div class="modal-content">
                 <div class="modal-header">
                     <h2>Reset Password</h2>
-                    <span class="close-modal">&times;</span>
+                    <span class="close-modal" role="button" tabindex="0" aria-label="Close modal">&times;</span>
                 </div>
                 <p class="text-muted" style="margin-bottom: 1.5rem;">Enter your email address and we'll send you a link to reset your password.</p>
                 <form id="reset-password-form">
@@ -227,8 +355,9 @@
                 </form>
             </div>
         </div>
-        <!-- Confirm Delete Modal -->
-        <div id="confirm-modal" class="modal hidden">
+
+        <!-- ===== Confirm Delete Modal ===== -->
+        <div id="confirm-modal" class="modal hidden" role="dialog" aria-modal="true">
             <div class="modal-content confirm-modal-content">
                 <div class="confirm-icon">🗑️</div>
                 <h2 class="confirm-title">Delete this Spark?</h2>
@@ -239,7 +368,46 @@
                 </div>
             </div>
         </div>
-    </div>
+
+        <!-- ===== Export Modal ===== -->
+        <div id="export-modal" class="modal hidden" role="dialog" aria-modal="true">
+            <div class="modal-content confirm-modal-content">
+                <div class="confirm-icon">⬇️</div>
+                <h2 class="confirm-title">Export Your Sparks</h2>
+                <p class="confirm-subtitle">Download all your sparks as a structured file you can use anywhere.</p>
+                <div class="confirm-actions">
+                    <button id="export-cancel-btn" class="btn btn-outline">Cancel</button>
+                    <button id="export-json-btn" class="btn btn-outline">{ } JSON</button>
+                    <button id="export-csv-btn" class="btn btn-primary">⊞ CSV</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- ===== Profile Settings Modal ===== -->
+        <div id="profile-modal" class="modal hidden" role="dialog" aria-modal="true">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h2>Profile Settings</h2>
+                    <span class="close-modal" role="button" tabindex="0" aria-label="Close modal">&times;</span>
+                </div>
+                <form id="profile-form">
+                    <div class="form-group">
+                        <label for="profile-name">Display Name</label>
+                        <input type="text" id="profile-name" required placeholder="E.g. Sarah">
+                    </div>
+                    <div class="form-group">
+                        <label>Account Email</label>
+                        <input type="email" id="profile-email" disabled class="disabled-input">
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-outline close-modal">Cancel</button>
+                        <button type="submit" id="profile-submit-btn" class="btn btn-primary">Save Changes</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+    </div><!-- #app -->
 
     <script type="module" src="app.js"></script>
 </body>

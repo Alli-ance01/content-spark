@@ -1,0 +1,16 @@
+{
+  "name": "ContentSpark",
+  "short_name": "ContentSpark",
+  "description": "Capture every spark of inspiration. The all-in-one collector for your content ideas, drafts, and inspiration links.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#6366f1",
+  "icons": [
+    {
+      "src": "icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}
